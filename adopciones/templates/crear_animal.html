@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Nuevo Animal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0"><i class="fas fa-paw me-2"></i>Registrar Nuevo Animal</h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ field.id_for_label }}">
+                                    <i class="fas {% if field.name == 'nombre' %}fa-tag{% elif field.name == 'especie' %}fa-paw{% elif field.name == 'raza' %}fa-dog{% elif field.name == 'edad' %}fa-birthday-cake{% elif field.name == 'sexo' %}fa-venus-mars{% elif field.name == 'centro' %}fa-building{% elif field.name == 'descripcion' %}fa-file-alt{% elif field.name == 'fecha_ingreso' %}fa-calendar{% elif field.name == 'foto' %}fa-camera{% endif %} me-2"></i>
+                                    {{ field.label }}
+                                </label>
+                                {% if field.name == 'descripcion' %}
+                                    <div class="form-floating">
+                                        {{ field }}
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    </div>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    {% for error in field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'inicio_centro' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Registrar Animal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        margin-bottom: 0.5rem;
+    }
+    .form-floating > .form-control {
+        height: 100px;
+    }
+    .form-floating > label {
+        padding-top: 0.5rem;
+    }
+    .form-label {
+        font-weight: 500;
+        color: #1a73e8;
+    }
+    .btn-primary {
+        background-color: #1a73e8;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #1557b0;
+    }
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,17 @@
+<h2>Historial médico de {{ animal.nombre }}</h2>
+<p>Especie: {{ animal.especie }} — Raza: {{ animal.raza }} — Edad: {{ animal.edad }}</p>
+
+{% if historial %}
+  <ul>
+    {% for evento in historial %}
+      <li>
+        <strong>{{ evento.fecha|date:"d/m/Y H:i" }}</strong>: {{ evento.evento }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No hay historial registrado para este animal.</p>
+{% endif %}
+
+
+<a href="{% url 'inicio_veterinario' %}">← Volver al panel</a>

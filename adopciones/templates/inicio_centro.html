@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Centro | Red de Huellas</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            padding-top: 80px;
+        }
+        .menu {
+            background-color: white;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .menu a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #1a73e8;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .menu a:hover {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+        }
+        .welcome-section {
+            background: linear-gradient(45deg, #1a73e8, #34ce57);
+            color: white;
+            padding: 40px 0;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stats-container {
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .stat-icon {
+            font-size: 2rem;
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .animal-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        .animal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .animal-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .btn-action {
+            background: linear-gradient(45deg, #28a745, #34ce57);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-action:hover {
+            background: linear-gradient(45deg, #34ce57, #28a745);
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        .filter-btn {
+            background: #f8f9fa;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #1a73e8;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: #1a73e8;
+            color: white;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-buttons .btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .filter-buttons .btn:hover {
+            transform: translateY(-2px);
+        }
+        .filter-buttons .btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .informe-item {
+            transition: all 0.3s;
+            background-color: white;
+        }
+        .informe-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .informe-item .text-truncate {
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Menú fijo -->
+    <div class="menu">
+        <div class="container">
+            <a href="{% url 'inicio' %}"><i class="fas fa-paw me-2"></i>Inicio</a>
+            <a href="{% url 'lista_animales' %}"><i class="fas fa-heart me-2"></i>Ver Animales</a>
+            <span class="user-greeting">
+                <i class="fas fa-building me-2"></i>{{ centro.nombre }}
+            </span>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sección de bienvenida -->
+        <div class="welcome-section text-center">
+            <h1 class="display-5 mb-3"><i class="fas fa-building me-3"></i>Panel del Centro</h1>
+            <p class="lead mb-0">Gestiona tus animales y solicitudes de adopción</p>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="row stats-container">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-paw"></i>
+                    </div>
+                    <div class="stat-number">{{ estadisticas.total }}</div>
+                    <div class="stat-label">Total de animales</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-number">{{ estadisticas.adoptados }}</div>
+                    <div class="stat-label">Adopciones exitosas</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-number">{{ estadisticas.urgentes }}</div>
+                    <div class="stat-label">Casos urgentes</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-medkit"></i>
+                    </div>
+                    <div class="stat-number">{{ estadisticas.en_tratamiento }}</div>
+                    <div class="stat-label">En tratamiento</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="quick-actions mb-4">
+            <h3><i class="fas fa-bolt me-2"></i>Acciones rápidas</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="{% url 'crear_animal' %}" class="btn-action w-100 mb-3">
+                        <i class="fas fa-plus-circle me-2"></i>Registrar animal
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="?filtro=urgentes" class="btn-action w-100 mb-3">
+                        <i class="fas fa-exclamation-circle me-2"></i>Ver casos urgentes
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="?filtro=tratamiento" class="btn-action w-100 mb-3">
+                        <i class="fas fa-file-medical me-2"></i>En tratamiento
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="?filtro=vacunas" class="btn-action w-100 mb-3">
+                        <i class="fas fa-syringe me-2"></i>Pendientes de vacuna
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Animales -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Lista de Animales</h5>
+                    <div class="filter-buttons">
+                        <a href="?filtro=disponibles" class="btn btn-outline-primary {% if filtro_actual == 'disponibles' %}active{% endif %}">
+                            <i class="fas fa-check-circle me-1"></i>Disponibles
+                        </a>
+                        <a href="?filtro=adoptados" class="btn btn-outline-success {% if filtro_actual == 'adoptados' %}active{% endif %}">
+                            <i class="fas fa-home me-1"></i>Adoptados
+                        </a>
+                        <a href="?filtro=urgentes" class="btn btn-outline-danger {% if filtro_actual == 'urgentes' %}active{% endif %}">
+                            <i class="fas fa-exclamation-circle me-1"></i>Urgentes
+                        </a>
+                        <a href="?filtro=tratamiento" class="btn btn-outline-warning {% if filtro_actual == 'tratamiento' %}active{% endif %}">
+                            <i class="fas fa-clinic-medical me-1"></i>En Tratamiento
+                        </a>
+                        <a href="?filtro=vacunas" class="btn btn-outline-info {% if filtro_actual == 'vacunas' %}active{% endif %}">
+                            <i class="fas fa-syringe me-1"></i>Pendientes Vacuna
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for animal in animales %}
+                    <div class="col-md-4 mb-4">
+                        <div class="animal-card">
+                            {% if animal.foto %}
+                            <img src="{{ animal.foto.url }}" alt="{{ animal.nombre }}" class="img-fluid">
+                            {% endif %}
+                            <h4>{{ animal.nombre }}</h4>
+                            <p class="mb-2"><i class="fas fa-info-circle me-2"></i>{{ animal.especie }} {% if animal.raza %}({{ animal.raza }}){% endif %}</p>
+                            <p class="mb-2"><i class="fas fa-birthday-cake me-2"></i>{{ animal.edad }} años</p>
+                            <div class="mb-3">
+                                {% if animal.adoptado %}
+                                    <span class="badge bg-info">Adoptado</span>
+                                {% elif animal.urgente %}
+                                    <span class="badge bg-danger">Urgente</span>
+                                {% elif animal.en_tratamiento %}
+                                    <span class="badge bg-warning">En Tratamiento</span>
+                                {% elif animal.pendiente_vacuna %}
+                                    <span class="badge bg-primary">Pendiente Vacuna</span>
+                                {% else %}
+                                    <span class="badge bg-success">Disponible</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'detalle_animal' animal.id %}" class="btn-action w-100">
+                                    <i class="fas fa-eye me-2"></i>Ver detalles
+                                </a>
+                                <a href="{% url 'editar_estado_animal' animal.id %}" class="btn-action w-100" style="background: #1a73e8;">
+                                    <i class="fas fa-edit me-2"></i>Editar estado
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximas Citas y Últimos Informes -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Próximas Citas</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if citas %}
+                            {% for cita in citas %}
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-calendar-check fa-2x text-primary"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0">{{ cita.animal.nombre }}</h6>
+                                    <small class="text-muted">
+                                        {{ cita.fecha|date:"d/m/Y H:i" }} - {{ cita.veterinario.nombre }}
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted mb-0">No hay citas programadas</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="fas fa-file-medical me-2"></i>Últimos Informes</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if informes %}
+                            {% for informe in informes %}
+                            <div class="informe-item mb-3 p-3 border rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-file-alt fa-2x text-info"></i>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-1">{{ informe.animal.nombre }}</h6>
+                                        <div class="text-muted small">
+                                            <i class="fas fa-calendar me-1"></i>{{ informe.fecha|date:"d/m/Y" }}
+                                            <i class="fas fa-user-md ms-2 me-1"></i>{{ informe.veterinario.nombre }}
+                                        </div>
+                                        <div class="mt-2">
+                                            <p class="mb-0 text-truncate">{{ informe.diagnostico }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted mb-0">No hay informes recientes</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
